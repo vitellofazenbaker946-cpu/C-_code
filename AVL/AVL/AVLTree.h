@@ -95,6 +95,134 @@ public:
 		}
 		return true;
 	}
+	//RR
+	void RotateR(Node* parent)
+	{
+		Node* pParent = parent->_parent;
+		Node* subL = parent->_left;
+		Node* subLR = subL->_right;
+		// 开始旋转
+		parent->_left = subLR;
+		if(subLR)
+		subLR->_parent = parent;
+		subL->_right = parent;
+		parent->_parent = subL;
+		//根据pParent来完善
+		if (pParent = nullptr)
+		{
+			_root = subL;
+			subL->_parent = nullptr;
+		}
+		else
+		{
+			if (pParent->_left == parent)
+			{
+				pParent->_left = subL;
+			}
+			else if (pParent->_right == parent)
+			{
+				pParent->_right = subL;
+			}
+			subL->_parent = pParent;
+		}
+		parent->_bf = subR->_bf = 0;
+	}
+	//LL
+	void RotateL(Node* parent)
+	{
+		Node* pParent = parent->_parent;
+		Node* subR = parent->_right;
+		Node* subRL = subR->_left;
+
+		parent->_right = subRL;
+		if (subRL)
+			subRL->_parent = parent;
+		subR->_left = parent;
+		parent->_parent = subR;
+
+		if (pParent == nullptr)
+		{
+			_root = subR;
+			subR->_parent = nullptr;
+		}
+		else
+		{
+			if (pParent->_left == parent)
+			{
+				pParent->_left = subR;
+			}
+			else if (pParent->_right == parent)
+			{
+				pParent->_right = subR;
+			}
+			
+			subR->_parent = pParent;
+		}
+		parent->_bf = subR->_bf = 0;
+	}
+	//LR
+	void RotateLR(Node* parent)
+	{
+		Node* subL = parent->_left;
+		Node* subLR = subL->_right;
+		int bf = subLR->_bf;
+		RotateL(parent->_left);
+		RotateR(parent);
+		if (bf == 0)
+		{
+			subL->_bf = 0;
+			subLR->_bf = 0;
+			parent->_bf = 0;
+		}
+		else if (bf == -1)
+		{
+			subL->_bf = 0;
+			subLR->_bf = 0;
+			parent->_bf = 1;
+		}
+		else if (bf == 1)
+		{
+			subL->_bf = -1;
+			subLR->_bf = 0;
+			parent->_bf = 0;
+		}
+		else
+		{
+			assert(false);
+		}
+	}
+	//RL
+	void RotateRL(Node* parent)
+	{
+		Node* subR = parent->_right;
+		Node* subRL = subR->_left;
+		int bf = subRL->_bf;
+		RotateR(parent->_right);
+		RotateL(parent);
+		if (bf == 0)
+		{
+			subR->_bf = 0;
+			subRL->_bf = 0;
+			parent->_bf = 0;
+		}
+		else if (bf == 1)
+		{
+			subR->_bf = 0;
+			subRL->_bf = 0;
+			parent->_bf = -1;
+		}
+		else if (bf == -1)
+		{
+			subR->_bf = 1;
+			subRL->_bf = 0;
+			parent->_bf = 0;
+		}
+		else
+		{
+			assert(false);
+		}
+	}
+
 
 private:
 	Node* _root = nullptr;
